@@ -5,90 +5,481 @@
   <title>AppsHub Admin Upload</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
+    * { box-sizing: border-box; }
     body {
-      background:#0b1220;
-      color:white;
-      font-family:Arial;
-      padding:20px;
+      background: linear-gradient(135deg, #0b1220 0%, #1e293b 100%);
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      margin: 0;
+      min-height: 100vh;
     }
-    input, select, button {
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      border-radius:6px;
-      border:none;
-      font-size:15px;
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: rgba(17, 24, 39, 0.8);
+      padding: 30px;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 24px;
+      background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+    input, select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: 2px solid #374151;
+      background: #1f2937;
+      color: white;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+    .file-input {
+      position: absolute;
+      left: -9999px;
+    }
+    .file-input-label {
+      display: block;
+      padding: 14px;
+      background: #374151;
+      border: 2px dashed #6b7280;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .file-input-label:hover {
+      border-color: #3b82f6;
+      background: #4b5563;
+    }
+    .file-info {
+      margin-top: 10px;
+      padding: 10px;
+      background: #065f46;
+      border-radius: 6px;
+      font-size: 14px;
+      display: none;
     }
     button {
-      background:#2563eb;
-      color:white;
-      cursor:pointer;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
     }
-    .box {
-      background:#111827;
-      padding:15px;
-      border-radius:8px;
-      margin-top:15px;
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .progress-container {
+      display: none;
+      margin-top: 20px;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #374151;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .progress-text {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #9ca3af;
+    }
+    .result-box {
+      background: #065f46;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      display: none;
+    }
+    .error-box {
+      background: #7f1d1d;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      display: none;
+    }
+    .copy-btn {
+      background: #059669;
+      margin-top: 10px;
+      font-size: 14px;
+      padding: 10px;
+    }
+    .copy-btn:hover {
+      background: #047857;
+    }
+    .file-limits {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 5px;
+    }
+    .version-icon {
+      margin-right: 8px;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .uploading {
+      animation: pulse 1.5s infinite;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>🚀 AppsHub Secure Upload</h2>
+    
+    <div class="form-group">
+      <label for="secret">🔐 Upload Password</label>
+      <input type="password" id="secret" placeholder="Enter your upload password">
+    </div>
 
-<h2>AppsHub Secure Upload</h2>
+    <div class="form-group">
+      <label for="release">📦 Release Version</label>
+      <select id="release">
+        <option value="v1"><span class="version-icon">🎮</span>v1 – GTA PC</option>
+        <option value="v2"><span class="version-icon">📱</span>v2 – GTA Android</option>
+        <option value="v3"><span class="version-icon">📦</span>v3 – APK Files</option>
+        <option value="v4"><span class="version-icon">🖥️</span>v4 – Windows Files</option>
+        <option value="v5"><span class="version-icon">🐧</span>v5 – Linux Files</option>
+        <option value="v6"><span class="version-icon">⚡</span>v6 – MOD APK</option>
+        <option value="v7"><span class="version-icon">🔧</span>v7 – Windows MOD</option>
+        <option value="v8"><span class="version-icon">🖼️</span>v8 – Images</option>
+      </select>
+    </div>
 
-<input type="password" id="secret" placeholder="Enter upload password">
+    <div class="form-group">
+      <label for="file">📁 Select File</label>
+      <div class="file-input-wrapper">
+        <input type="file" id="file" class="file-input" onchange="handleFileSelect()">
+        <label for="file" class="file-input-label">
+          📤 Click to select file or drag & drop
+        </label>
+      </div>
+      <div id="fileInfo" class="file-info"></div>
+      <div class="file-limits">
+        Max sizes: APK/MOD (500MB) • Windows/Linux (2GB) • Images (50MB)
+      </div>
+    </div>
 
-<select id="release">
-  <option value="v1">v1 – GTA PC</option>
-  <option value="v2">v2 – GTA Android</option>
-  <option value="v3">v3 – APK Files</option>
-  <option value="v4">v4 – Windows Files</option>
-  <option value="v5">v5 – Linux Files</option>
-  <option value="v6">v6 – MOD APK</option>
-  <option value="v7">v7 – Windows MOD</option>
-  <option value="v8">v8 – Images</option>
-</select>
+    <button id="uploadBtn" onclick="upload()">🚀 Upload File</button>
 
-<input type="file" id="file">
+    <div id="progress" class="progress-container">
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <div id="progressText" class="progress-text">Preparing upload...</div>
+    </div>
 
-<button onclick="upload()">Upload File</button>
-
-<div id="result"></div>
+    <div id="result" class="result-box"></div>
+    <div id="error" class="error-box"></div>
+  </div>
 
 <script>
+// Role-based access control
+const UPLOAD_USERS = {
+  "admin123": ["v1","v2","v3","v4","v5","v6","v7","v8"],
+  "friend456": ["v3","v6"], // only APK + MOD APK
+  "tester789": ["v8"] // only images
+};
+
+// File size limits (in bytes)
+const FILE_LIMITS = {
+  "v3": 500 * 1024 * 1024, // APK: 500MB
+  "v6": 500 * 1024 * 1024, // MOD APK: 500MB
+  "v4": 2 * 1024 * 1024 * 1024, // Windows: 2GB
+  "v5": 2 * 1024 * 1024 * 1024, // Linux: 2GB
+  "v7": 2 * 1024 * 1024 * 1024, // Windows MOD: 2GB
+  "v8": 50 * 1024 * 1024, // Images: 50MB
+  "v1": 2 * 1024 * 1024 * 1024, // GTA PC: 2GB
+  "v2": 500 * 1024 * 1024 // GTA Android: 500MB
+};
+
+let uploadedFiles = new Set(); // Track uploaded files
+
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function handleFileSelect() {
+  const file = document.getElementById("file").files[0];
+  const fileInfo = document.getElementById("fileInfo");
+  
+  if (file) {
+    fileInfo.style.display = "block";
+    fileInfo.innerHTML = `
+      📄 <strong>${file.name}</strong><br>
+      📊 Size: ${formatFileSize(file.size)}<br>
+      📅 Modified: ${new Date(file.lastModified).toLocaleDateString()}
+    `;
+    
+    // Check if file already exists
+    if (uploadedFiles.has(file.name)) {
+      showError(`⚠️ File "${file.name}" already exists. Please rename or delete the old one.`);
+    } else {
+      hideError();
+    }
+  } else {
+    fileInfo.style.display = "none";
+  }
+}
+
+function validateAccess(secret, release) {
+  const allowedVersions = UPLOAD_USERS[secret];
+  if (!allowedVersions) {
+    return "Invalid password";
+  }
+  if (!allowedVersions.includes(release)) {
+    return `Access denied. You can only upload to: ${allowedVersions.join(", ")}`;
+  }
+  return null;
+}
+
+function validateFileSize(file, release) {
+  const limit = FILE_LIMITS[release];
+  if (file.size > limit) {
+    return `File too large. Max size for ${release}: ${formatFileSize(limit)}`;
+  }
+  return null;
+}
+
+function showProgress() {
+  document.getElementById("progress").style.display = "block";
+  document.getElementById("uploadBtn").disabled = true;
+  document.getElementById("uploadBtn").classList.add("uploading");
+  document.getElementById("uploadBtn").textContent = "⏳ Uploading...";
+}
+
+function hideProgress() {
+  document.getElementById("progress").style.display = "none";
+  document.getElementById("uploadBtn").disabled = false;
+  document.getElementById("uploadBtn").classList.remove("uploading");
+  document.getElementById("uploadBtn").textContent = "🚀 Upload File";
+}
+
+function updateProgress(percent, text) {
+  document.getElementById("progressFill").style.width = percent + "%";
+  document.getElementById("progressText").textContent = text;
+}
+
+function showResult(url, fileName) {
+  const result = document.getElementById("result");
+  result.style.display = "block";
+  result.innerHTML = `
+    <h3>✅ Upload Successful!</h3>
+    <p><strong>File:</strong> ${fileName}</p>
+    <input value="${url}" readonly style="margin-bottom: 10px;">
+    <button class="copy-btn" onclick="copyToClipboard('${url}')">
+      📋 Copy Download URL
+    </button>
+  `;
+  
+  // Add to uploaded files list
+  uploadedFiles.add(fileName);
+  
+  // Log upload activity
+  logUpload(fileName, document.getElementById("release").value);
+}
+
+function showError(message) {
+  const error = document.getElementById("error");
+  error.style.display = "block";
+  error.innerHTML = `<h3>❌ Error</h3><p>${message}</p>`;
+}
+
+function hideError() {
+  document.getElementById("error").style.display = "none";
+}
+
+function hideResult() {
+  document.getElementById("result").style.display = "none";
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    const originalText = btn.textContent;
+    btn.textContent = "✅ Copied!";
+    btn.style.background = "#059669";
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.style.background = "";
+    }, 2000);
+  });
+}
+
+function logUpload(fileName, version) {
+  const logs = JSON.parse(localStorage.getItem('uploadLogs') || '[]');
+  logs.push({
+    fileName,
+    version,
+    timestamp: new Date().toISOString(),
+    user: 'current_user' // In real app, get from auth
+  });
+  localStorage.setItem('uploadLogs', JSON.stringify(logs.slice(-50))); // Keep last 50
+}
+
 async function upload() {
   const file = document.getElementById("file").files[0];
   const secret = document.getElementById("secret").value;
   const release = document.getElementById("release").value;
 
-  if(!file || !secret) {
-    alert("Missing file or password");
+  hideError();
+  hideResult();
+
+  // Validation
+  if (!file || !secret) {
+    showError("Please select a file and enter password");
     return;
   }
 
-  const form = new FormData();
-  form.append("file", file);
-  form.append("secret", secret);
-  form.append("release", release);
+  // Check access permissions
+  const accessError = validateAccess(secret, release);
+  if (accessError) {
+    showError(accessError);
+    return;
+  }
 
-  const res = await fetch("https://atomnexis-appshub-uploader.voltedgebuilds.workers.dev", {
-    method: "POST",
-    body: form
-  });
+  // Check file size
+  const sizeError = validateFileSize(file, release);
+  if (sizeError) {
+    showError(sizeError);
+    return;
+  }
 
-  const data = await res.json();
+  // Check duplicate
+  if (uploadedFiles.has(file.name)) {
+    showError(`File "${file.name}" already exists. Please rename or delete the old one.`);
+    return;
+  }
 
-  if(data.url) {
-    document.getElementById("result").innerHTML = `
-      <div class="box">
-        <input value="${data.url}" readonly>
-        <button onclick="navigator.clipboard.writeText('${data.url}')">
-          Copy URL
-        </button>
-      </div>
-    `;
-  } else {
-    alert(data.error || "Upload failed");
+  showProgress();
+  updateProgress(10, `Preparing ${file.name}...`);
+
+  try {
+    const form = new FormData();
+    form.append("file", file);
+    form.append("secret", secret);
+    form.append("release", release);
+
+    updateProgress(30, "Uploading to server...");
+
+    const res = await fetch("https://atomnexis-appshub-uploader.voltedgebuilds.workers.dev", {
+      method: "POST",
+      body: form
+    });
+
+    updateProgress(80, "Processing upload...");
+
+    const data = await res.json();
+
+    updateProgress(100, "Upload complete!");
+
+    if (data.url) {
+      setTimeout(() => {
+        hideProgress();
+        showResult(data.url, file.name);
+      }, 500);
+    } else {
+      hideProgress();
+      showError(data.error || "Upload failed. Please try again.");
+    }
+  } catch (error) {
+    hideProgress();
+    showError("Network error. Please check your connection and try again.");
+  }
+}
+
+// Drag and drop functionality
+const fileLabel = document.querySelector('.file-input-label');
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+  fileLabel.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+['dragenter', 'dragover'].forEach(eventName => {
+  fileLabel.addEventListener(eventName, highlight, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+  fileLabel.addEventListener(eventName, unhighlight, false);
+});
+
+function highlight(e) {
+  fileLabel.style.borderColor = '#3b82f6';
+  fileLabel.style.background = '#4b5563';
+}
+
+function unhighlight(e) {
+  fileLabel.style.borderColor = '#6b7280';
+  fileLabel.style.background = '#374151';
+}
+
+fileLabel.addEventListener('drop', handleDrop, false);
+
+function handleDrop(e) {
+  const dt = e.dataTransfer;
+  const files = dt.files;
+  
+  if (files.length > 0) {
+    document.getElementById('file').files = files;
+    handleFileSelect();
   }
 }
 </script>
