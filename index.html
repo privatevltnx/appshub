@@ -71,7 +71,7 @@ async function upload() {
   form.append("secret", secret);
   form.append("release", release);
 
-  const res = await fetch("https://YOUR-WORKER-URL/upload", {
+  const res = await fetch("atomnexis-appshub-uploader.voltedgebuilds.workers.dev", {
     method: "POST",
     body: form
   });
