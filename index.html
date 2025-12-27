@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>AppsHub Admin Upload</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background:#0b1220;
+      color:white;
+      font-family:Arial;
+      padding:20px;
+    }
+    input, select, button {
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border-radius:6px;
+      border:none;
+      font-size:15px;
+    }
+    button {
+      background:#2563eb;
+      color:white;
+      cursor:pointer;
+    }
+    .box {
+      background:#111827;
+      padding:15px;
+      border-radius:8px;
+      margin-top:15px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>AppsHub Secure Upload</h2>
+
+<input type="password" id="secret" placeholder="Enter upload password">
+
+<select id="release">
+  <option value="v1">v1 – GTA PC</option>
+  <option value="v2">v2 – GTA Android</option>
+  <option value="v3">v3 – APK Files</option>
+  <option value="v4">v4 – Windows Files</option>
+  <option value="v5">v5 – Linux Files</option>
+  <option value="v6">v6 – MOD APK</option>
+  <option value="v7">v7 – Windows MOD</option>
+  <option value="v8">v8 – Images</option>
+</select>
+
+<input type="file" id="file">
+
+<button onclick="upload()">Upload File</button>
+
+<div id="result"></div>
+
+<script>
+async function upload() {
+  const file = document.getElementById("file").files[0];
+  const secret = document.getElementById("secret").value;
+  const release = document.getElementById("release").value;
+
+  if(!file || !secret) {
+    alert("Missing file or password");
+    return;
+  }
+
+  const form = new FormData();
+  form.append("file", file);
+  form.append("secret", secret);
+  form.append("release", release);
+
+  const res = await fetch("https://YOUR-WORKER-URL/upload", {
+    method: "POST",
+    body: form
+  });
+
+  const data = await res.json();
+
+  if(data.url) {
+    document.getElementById("result").innerHTML = `
+      <div class="box">
+        <input value="${data.url}" readonly>
+        <button onclick="navigator.clipboard.writeText('${data.url}')">
+          Copy URL
+        </button>
+      </div>
+    `;
+  } else {
+    alert(data.error || "Upload failed");
+  }
+}
+</script>
+
+</body>
+</html>
