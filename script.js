@@ -1,20 +1,21 @@
 // Role-based access control
 const UPLOAD_USERS = {
-  "admin123": ["v1","v2","v3","v4","v5","v6","v7","v8"],
+  "admin123": ["v1","v2","v3","v4","v5","v6","v7","v8","v9"],
   "friend456": ["v3","v6"], // only APK + MOD APK
   "tester789": ["v8"] // only images
 };
 
 // File size limits (in bytes)
 const FILE_LIMITS = {
-  "v3": 500 * 1024 * 1024, // APK: 500MB
-  "v6": 500 * 1024 * 1024, // MOD APK: 500MB
+  "v3": 2 * 1024 * 1024 * 1024, // APK: 2GB
+  "v6": 2 * 1024 * 1024 * 1024, // MOD APK: 2GB
   "v4": 2 * 1024 * 1024 * 1024, // Windows: 2GB
   "v5": 2 * 1024 * 1024 * 1024, // Linux: 2GB
   "v7": 2 * 1024 * 1024 * 1024, // Windows MOD: 2GB
-  "v8": 50 * 1024 * 1024, // Images: 50MB
+  "v8": 2 * 1024 * 1024 * 1024,// Images: 2GB
+  "v9": 2 * 1024 * 1024 * 1024,
   "v1": 2 * 1024 * 1024 * 1024, // GTA PC: 2GB
-  "v2": 500 * 1024 * 1024 // GTA Android: 500MB
+  "v2": 2 * 1024 * 1024 * 1024 // GTA Android: 2GB
 };
 
 let uploadedFiles = new Set(); // Track uploaded files
